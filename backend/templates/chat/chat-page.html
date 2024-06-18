@@ -17,6 +17,53 @@
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <style>
+    .member-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eaeaea;
+    }
+  
+    .member-item:last-child {
+      border-bottom: none;
+    }
+  
+    .profile-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #fff;
+      margin-right: 10px;
+    }
+  
+    .member-name {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    #startGroupCall {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #3490dc;
+      color: white;
+      text-align: center;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  
+    #startGroupCall:hover {
+      background-color: #2779bd;
+    }
+  </style>
+  
 
 
 </head>
@@ -65,10 +112,10 @@
           </div>
 
           <ul class="room-container-block hidden lg:block ">
-            <h2 class="text-lg text-gray-600 bg-slate-200 p-2 shadow">Direct</h2>
+            {% comment %} <h2 class="text-lg text-gray-600 bg-slate-200 p-2 shadow">Direct</h2>
             <li class="overflow-auto h-[16rem]">
               <div id="roomContainerDirect"></div>
-            </li>
+            </li> {% endcomment %}
             <h2 class="text-lg text-gray-600 bg-slate-200 p-2 shadow">Group</h2>
             <li class="overflow-auto h-[15rem]">
               <div id="roomContainerGroup"></div>
@@ -82,7 +129,7 @@
             </li>
           </ul>
         </div>
-        <div class="messages-container-block col-span-2 block lg:block">
+        <div class="messages-container-block hidden col-span-2 block lg:block">
           <div class="w-full">
 
             {% include 'chat/skeletons/room-info-skeleton.html' %}
@@ -92,22 +139,31 @@
               {% comment %} <span class="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"></span>  {% endcomment %}
             </div>
             <div class="messages-container-div relative w-full p-6 overflow-y-auto h-[40rem] bg-gray-200">
-              <ul id="messages_container" class="space-y-2 messages-container">
-
-                {% include 'chat/skeletons/messages-skeleton.html' %}
-
-                
-              </ul>
-              <div id="typingMsgContainer" class="hidden flex justify-end mt-4">
-                <div>
-                    <span id="typingUserNames" class="block text-right font-bold text-sm">
-                    </span>
-                    <div class="relative float-right px-4 py-2 text-gray-700 bg-gray-50 rounded shadow">
-                        <img height="40px" width="50px" src={% static "images/typing.gif" %} alt="typing">
+              <div class="grid grid-cols-12 gap-4">
+                <!-- Kolom kiri kosong -->
+                <div id="left" class="hidden col-span-12 md:col-span-4">
+                  <a id="startGroupCall" href={% url 'base:lobby' %} target="_blank" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4" value="Start Group Call">Start Group Call</a>
+                  <div id="kiri" class="col-span-12 md:col-span-4">
+                  </div>
+                </div>
+            
+                <!-- Kolom kanan untuk konten pesan -->
+                <div class="col-span-12 md:col-span-12" id="kanan">
+                  <ul id="messages_container" class="space-y-2 messages-container">
+                    {% include 'chat/skeletons/messages-skeleton.html' %}
+                  </ul>
+                  <div id="typingMsgContainer" class="hidden flex justify-end mt-4">
+                    <div>
+                      <span id="typingUserNames" class="block text-right font-bold text-sm"></span>
+                      <div class="relative float-right px-4 py-2 text-gray-700 bg-gray-50 rounded shadow">
+                        <img height="40px" width="50px" src="{% static 'images/typing.gif' %}" alt="typing">
+                      </div>
                     </div>
+                  </div>
                 </div>
               </div>
             </div>
+            
 
             <div class=" hidden no-room-select flex items-center justify-between w-full p-3 border-t border-gray-300">
               {% comment %} <button>
@@ -169,6 +225,31 @@
       var CHAT_ROOMS = [];
       var SELECTED_ROOM = null;
     </script>
+
+    {% comment %} <script>
+      let form = document.getElementById('form')
+
+      let handleSubmit = async (e) => {
+          console.log("halo");
+          e.preventDefault()
+          let room = e.target.room.value.toUpperCase()
+          let response = await fetch(`/get_token/?channel=${room}`)
+          let data = await response.json()
+
+          let UID = data.uid
+          let token = data.token
+
+          sessionStorage.setItem('UID', UID)
+          sessionStorage.setItem('token', token)
+          localStorage.setItem("username", name);
+          window.open(`/room/${room}`, '_self')
+          
+      }
+  
+  
+  
+      form.addEventListener('submit', handleSubmit)
+  </script> {% endcomment %}
 
 
     <script type="text/javascript"  src='{% static "js/api.js" %}' ></script>

@@ -10,65 +10,68 @@
 
 
 
-  // init Isotope
+// init Isotope
 var $GRID = $('#roomContainerDirect').isotope({
-    itemSelector: '.chat-room-elem-box',
-    layoutMode: 'vertical',
-    getSortData: {
-      weight: function( itemElem ) {
-        var dataTime = $( itemElem ).find(".text-time").attr("data-time");
-        if ( dataTime) {
-            let momentObj = convertToMomentObj(dataTime);
-            return ( momentObj) ? momentObj.format('x') : "-1"
-        }
-        return "-1";
+  itemSelector: '.chat-room-elem-box',
+  layoutMode: 'vertical',
+  getSortData: {
+    weight: function (itemElem) {
+      var dataTime = $(itemElem).find(".text-time").attr("data-time");
+      if (dataTime) {
+        let momentObj = convertToMomentObj(dataTime);
+        return (momentObj) ? momentObj.format('x') : "-1"
       }
+      return "-1";
     }
-  });
+  }
+});
 
-  var $GRID2 = $("#roomContainerGroup").isotope({
-    itemSelector: '.chat-room-elem-box',
-    layoutMode: 'vertical',
-    getSortData: {
-      weight: function( itemElem ) {
-        var dataTime = $( itemElem ).find(".text-time").attr("data-time");
-        if ( dataTime) {
-            let momentObj = convertToMomentObj(dataTime);
-            return ( momentObj) ? momentObj.format('x') : "-1"
-        }
-        return "-1";
+var $GRID2 = $("#roomContainerGroup").isotope({
+  itemSelector: '.chat-room-elem-box',
+  layoutMode: 'vertical',
+  getSortData: {
+    weight: function (itemElem) {
+      var dataTime = $(itemElem).find(".text-time").attr("data-time");
+      if (dataTime) {
+        let momentObj = convertToMomentObj(dataTime);
+        return (momentObj) ? momentObj.format('x') : "-1"
       }
+      return "-1";
     }
-  });
+  }
+});
 
 function sortRoomElements() {
-    setTimeout( function() {
-        if ($GRID) {
-            $GRID.isotope({ sortBy : 'weight', sortAscending: false });
-        }
-    }, 500);
-    setTimeout( function() {
-        if ($GRID2) {
-            $GRID2.isotope({ sortBy : 'weight', sortAscending: false });
-        }
-    }, 500);
+  setTimeout(function () {
+    if ($GRID) {
+      $GRID.isotope({ sortBy: 'weight', sortAscending: false });
+    }
+  }, 500);
+  setTimeout(function () {
+    if ($GRID2) {
+      $GRID2.isotope({ sortBy: 'weight', sortAscending: false });
+    }
+  }, 500);
 }
 
-function addInIsotopeItems(  ) { 
-    $GRID.isotope( 'insert', $("#roomContainerDirect").find(".chat-room-elem-box") );
-    $GRID2.isotope( 'insert', $("#roomContainerGroup").find(".chat-room-elem-box") );
-    sortRoomElements();
+function addInIsotopeItems() {
+  $GRID.isotope('insert', $("#roomContainerDirect").find(".chat-room-elem-box"));
+  $GRID2.isotope('insert', $("#roomContainerGroup").find(".chat-room-elem-box"));
+  sortRoomElements();
 }
 
-function updatedSortData( ) { 
-    $GRID.isotope( 'reloadItems');
-    $GRID2.isotope( 'reloadItems');
-    sortRoomElements();
+function updatedSortData() {
+  $GRID.isotope('reloadItems');
+  $GRID2.isotope('reloadItems');
+  sortRoomElements();
 }
 
 function displayChatInfoAtTop(chatRoom) {
   $("#roomInfoTop").html(
     topRoomInformation(chatRoom, USERID)
+  );
+  $("#kiri").html(
+    memberList(chatRoom, USERID)
   );
 }
 
@@ -83,8 +86,8 @@ async function displayChatRoom(chatRoomManagerObj) {
     .forEach(function (room) {
       chatRoomTemplate.push(roomTemplate(room.chatRoom, room.colorClass));
     });
-    $("#roomContainerDirect").html(chatRoomTemplate);
-    
+  $("#roomContainerDirect").html(chatRoomTemplate);
+
 
 
   let chatRoomTemplate2 = [];
@@ -111,10 +114,10 @@ async function displayChatMessages(chatRoomId) {
         message.user == USERID
           ? sendChatTemplate(message)
           : incomingChatTemplate(
-              message,
-              userName,
-              chatRoom.memberTxtColor[message.user]
-            )
+            message,
+            userName,
+            chatRoom.memberTxtColor[message.user]
+          )
       );
     });
   } else {
@@ -152,7 +155,7 @@ async function onSearchSelect(roomObj) {
   }
 }
 
-$(document).ready(async function() {
+$(document).ready(async function () {
   // display chat rooms
   await displayChatRoom(CHAT_ROOM_MANAGER);
 
@@ -197,8 +200,8 @@ $(document).ready(async function() {
           if (item.original.type != currentCategory) {
             ul.append(
               "<li class='ui-autocomplete-category bg-gray-200 font-bold py-2'>" +
-                ROOM_TYPES[item.original.type] +
-                "</li>"
+              ROOM_TYPES[item.original.type] +
+              "</li>"
             );
             currentCategory = item.original.type;
           }
@@ -237,18 +240,18 @@ $(document).ready(async function() {
       },
     })
     .roomAutoComplete("instance")._renderItem = function (ul, item) {
-    return $("<li>")
-      .append(
-        `<div>
+      return $("<li>")
+        .append(
+          `<div>
         <span class='px-2 block'>${item.label}</span>
         <span class='px-2 block text-gray-400 italic'>Members: ${displayMembersName(
-          item.original.all_members,
-          [parseInt(USERID)]
-        )}</span>
+            item.original.all_members,
+            [parseInt(USERID)]
+          )}</span>
         </div>`
-      )
-      .appendTo(ul);
-  };
+        )
+        .appendTo(ul);
+    };
 
   $("#toggleRoomBlockBtn").on("click", function () {
     toggleRoomBlock();

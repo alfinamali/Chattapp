@@ -30,9 +30,9 @@ $(document).ready(function () {
   const Validations = {
     members: function () {
       let result = { error: false, msg: "" };
-      if (MEMBERS.length === 0) {
-        result = { error: true, msg: "This field is required" };
-      }
+      // if (MEMBERS.length === 0) {
+      //   result = { error: true, msg: "This field is required" };
+      // }
       return result;
     },
     name: function (val) {
